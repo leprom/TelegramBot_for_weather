@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +58,7 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     public void onUpdateReceived(Update update) {
+        Model model = new Model();
         Message message = update.getMessage();
         if (message != null && message.hasText()){
             switch (message.getText()){
@@ -67,6 +69,11 @@ public class Bot extends TelegramLongPollingBot {
                     sendMsg(message, "What you will customize?");
                     break;
                 default:
+                    try {
+                        sendMsg(message, Weather.getWeather(message.getText(), model));
+                    } catch (IOException e) {
+                        sendMsg(message, "This city is not found");
+                    }
 
 
             }
